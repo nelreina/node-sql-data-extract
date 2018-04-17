@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src src/index.js --json"
+    "dev": "nodemon --watch src src/index.js --lp"
   },
   "keywords": [],
   "author": "Nelson Reina <nelreina@gmail.com>",

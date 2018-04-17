@@ -1,5 +1,6 @@
 const { sqllize } = require('nelreina-node-utils');
 const fs = require('fs');
+const fse = require('fs-extra');
 const path = require('path');
 const Events = require('events');
 const { promisify } = require('util');
@@ -40,7 +41,8 @@ class DataExtract extends Events {
 
   async extract(file) {
     let text;
-    const { ext, DIR_OUTPUT, DIR_SQLSTMTS } = this.options;
+    const { ext, DIR_OUTPUT, periodPath } = this.options;
+    const outdir = path.normalize(`${DIR_OUTPUT}${periodPath}`);
     const fileName = `${path.basename(file).replace('.sql', '')}.${ext}`;
     const query = await readFile(file);
     this.emit('log', 'extracting data...');
@@ -55,7 +57,8 @@ class DataExtract extends Events {
       text = JSON.stringify(data, null, 2);
     }
     this.emit('log', `writing ${fileName} file...`);
-    await writeFile(`${DIR_OUTPUT}/${fileName}`, text);
+    await fse.ensureDir(outdir);
+    await writeFile(`${outdir}/${fileName}`, text);
     this.emit('log', `write ${fileName} file done`);
     return text;
   }
