@@ -1,0 +1,9 @@
+# Rename this file to .env
+DB_DIALECT='mssql'
+DB_HOST=<DB_HOST>
+DB_NAME=<DB_NAME>
+DB_USERNAME=<DB_USERNAME>
+DB_PASSWORD=<DB_PASSWORD>
+DB_OPTIONS='{"operatorsAliases": false, "logging": false}'
+DIR_SQL='./SQLSTMTS'
+DIR_OUTPUT='./OUTPUT'

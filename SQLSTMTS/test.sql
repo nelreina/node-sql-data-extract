@@ -1,0 +1,1 @@
+select 'Hello node-sql-data-extract' test
