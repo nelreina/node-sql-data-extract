@@ -1,6 +1,5 @@
 require('dotenv').config();
 const Sequelize = require('sequelize');
-const fs = require('fs');
 const path = require('path');
 const { converters, sqllize } = require('nelreina-node-utils');
 const Log4js = require('log4js');
@@ -22,16 +21,18 @@ logger.info('Start creating file...');
 const { json } = argv;
 const ext = json ? 'json' : 'csv';
 
-const DIR_OUTPUT = process.env.DIR_OUTPUT || './OUTPUT';
-const DIR_SQLSTMTS = process.env.DIR_SQLSTMTS || './SQLSTMTS';
+const DIR_OUTPUT =
+  process.env.DIR_OUTPUT || path.resolve(__dirname, '../OUTPUT');
+const DIR_SQLSTMTS =
+  process.env.DIR_SQLSTMTS || path.resolve(__dirname, '../SQLSTMTS');
 const options = { DIR_OUTPUT, DIR_SQLSTMTS, ext };
 
 (async () => {
-  const de = new DataExtract();
+  const de = new DataExtract(mssql, options);
 
   de.on('log', data => logger.info(data));
   try {
-    await de.run(mssql, options);
+    await de.run();
   } catch (error) {
     logger.error(error);
   }

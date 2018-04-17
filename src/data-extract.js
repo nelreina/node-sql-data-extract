@@ -1,5 +1,6 @@
 const { sqllize } = require('nelreina-node-utils');
 const fs = require('fs');
+const path = require('path');
 const Events = require('events');
 const { promisify } = require('util');
 const converter = require('json2csv');
@@ -21,25 +22,29 @@ const toCSV = data => {
 };
 
 class DataExtract extends Events {
-  async run(mssql, options) {
-    const { ext, DIR_OUTPUT, DIR_SQLSTMTS } = options;
-    let text;
+  constructor(db, options) {
+    super();
+    this.options = options;
+    this.db = db;
+  }
+  async run() {
+    const { DIR_SQLSTMTS } = this.options;
     const sqlFiles = await readDir(DIR_SQLSTMTS);
     this.emit('log', JSON.stringify(sqlFiles));
     const promises = [];
     sqlFiles.forEach(file => {
-      promises.push(
-        this.extract(file, ext, DIR_SQLSTMTS, mssql, text, DIR_OUTPUT)
-      );
+      promises.push(this.extract(`${DIR_SQLSTMTS}/${file}`));
     });
     return await Promise.all(promises);
   }
 
-  async extract(file, ext, DIR_SQLSTMTS, mssql, text, DIR_OUTPUT) {
-    const fileName = `${file.replace('.sql', '')}.${ext}`;
-    const query = await readFile(`${DIR_SQLSTMTS}/${file}`);
+  async extract(file) {
+    let text;
+    const { ext, DIR_OUTPUT, DIR_SQLSTMTS } = this.options;
+    const fileName = `${path.basename(file).replace('.sql', '')}.${ext}`;
+    const query = await readFile(file);
     this.emit('log', 'extracting data...');
-    const data = await invokeSQLCmd(mssql, query.toString());
+    const data = await invokeSQLCmd(this.db, query.toString());
     this.emit('log', 'extract finished ');
     this.emit('log', 'extracted ' + data.length + ' rows');
     if (ext === 'csv') {

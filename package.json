@@ -10,9 +10,11 @@
   "author": "Nelson Reina <nelreina@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^5.0.0",
     "json2csv": "3.11.5",
     "log4js": "^2.5.3",
     "minimist": "^1.2.0",
+    "moment": "^2.22.1",
     "nelreina-node-utils": "^0.0.5",
     "nodemon": "^1.17.3",
     "sequelize": "^4.37.6",
